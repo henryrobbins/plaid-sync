@@ -1,3 +1,4 @@
 config/sandbox
 sandbox.db
 venv
+__pycache__
