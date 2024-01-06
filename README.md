@@ -167,4 +167,3 @@ This is important for accounts in the "test" level, as there is a 100 lifetime a
 # TODO
 
 * Request and store balance amounts in a new table in the SQLite database.
-* Formalize setup process, add `setup.py`, ensure support for installation through [pipx](https://github.com/pipxproject/pipx).
