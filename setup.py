@@ -19,7 +19,7 @@ setuptools.setup(
     classifiers=[],
     entry_points={
         'console_scripts': [
-            'plaid-sync = plaid-sync.plaid-sync:cli',
+            'plaid-sync = plaidsync.main:main',
         ],
     },
     install_requires=[
