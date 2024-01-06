@@ -182,7 +182,7 @@ def update_account(cfg: config.Config, plaid: plaidapi.PlaidAPI, account_name: s
             access_token=cfg.get_account_access_token(account_name)
         )
 
-        import webserver
+        from . import webserver
         plaid_response = webserver.serve(
             env=cfg.environment,
             clientName="plaid-sync",
