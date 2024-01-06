@@ -14,6 +14,7 @@ import mimetypes
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Dict
+import pkg_resources
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +77,8 @@ class PlaidLinkHTTPServer(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
 
         if path == "/link.html":
-            self.serve_file("html/link.html")
+            abs_file_path = pkg_resources.resource_filename(__name__, "html/link.html")
+            self.serve_file(abs_file_path)
             return
         else:
             self.send_404()
