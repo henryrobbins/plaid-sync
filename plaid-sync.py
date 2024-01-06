@@ -341,7 +341,7 @@ def main():
 
         now = datetime.datetime.now(tz=datetime.timezone.utc)
 
-        if sync.item_info.ts_last_failed_update > sync.item_info.ts_last_successful_update:
+        if sync.item_info.ts_last_failed_update is not None and sync.item_info.ts_last_failed_update > sync.item_info.ts_last_successful_update:
             print("%-50s: Last attempt failed!  Last failure: %s  Last success: %s" % (
                 account_name, sync.item_info.ts_last_failed_update, sync.item_info.ts_last_successful_update
             ))
