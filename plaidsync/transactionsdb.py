@@ -11,6 +11,11 @@ from .plaidapi import AccountBalance, AccountInfo, Transaction as PlaidTransacti
 def build_placeholders(list):
     return ",".join(["?"]*len(list))
 
+def serialize_datetime(datetime: datetime.datetime):
+    if datetime is None:
+        return None
+    return datetime.isoformat()
+
 class TransactionsDB():
     def __init__(self, dbfile:str):
         self.conn = sqlite3.connect(dbfile)
@@ -95,7 +100,15 @@ class TransactionsDB():
                     last_failed_update = excluded.last_failed_update,
                     last_successful_update = excluded.last_successful_update,
                     plaid_json = excluded.plaid_json
-        """, [item_info.item_id, item_info.institution_id, item_info.ts_consent_expiration, item_info.ts_last_failed_update, item_info.ts_last_successful_update, json.dumps(item_info.raw_data)])
+        """, [
+            item_info.item_id,
+            item_info.institution_id,
+            serialize_datetime(item_info.ts_consent_expiration),
+            serialize_datetime(item_info.ts_last_failed_update),
+            serialize_datetime(item_info.ts_last_successful_update),
+            json.dumps(item_info.raw_data)
+            ]
+        )
 
         self.conn.commit()
 

@@ -23,6 +23,7 @@ account = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 import configparser
 import time
 import shutil
+import plaid
 
 
 class Config:
@@ -31,13 +32,26 @@ class Config:
         self.config = configparser.ConfigParser()
         self.config.read(config_file)
 
+    def get_host(self):
+        env = self.config['PLAID'].get('environment', 'sandbox')
+        if env == "sandbox":
+            return plaid.Environment.Sandbox
+        elif env == "development":
+            return plaid.Environment.Development
+        elif env == "production":
+            return plaid.Environment.Production
+        else:
+            raise ValueError("{env} is not a valid environment")
+
     def get_plaid_client_config(self) -> str:
-        return {
-            'client_id': self.config['PLAID']['client_id'],
-            'secret': self.config['PLAID']['secret'],
-            'environment': self.config['PLAID'].get('environment', 'sandbox'),
-            'suppress_warnings': self.config['PLAID'].get('suppress_warnings', True),
-        }
+        return plaid.Configuration(
+            host=self.get_host(),
+            api_key={
+                'clientId': self.config['PLAID']['client_id'],
+                'secret': self.config['PLAID']['secret'],
+                'public_key': self.config['PLAID']['public_key']
+            }
+    )
 
     @property
     def environment(self):
