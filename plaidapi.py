@@ -53,7 +53,7 @@ def parse_optional_iso8601_timestamp(ts: Optional[str]) -> datetime.datetime:
     # which fromisoformat hates - it also hates "Z", so strip those off from this
     # string (the milliseconds hardly matter for this purpose, and I'd rather avoid
     # having to pull dateutil JUST for this parsing)
-    return datetime.datetime.fromisoformat(re.sub(r"[.][0-9]+Z", "+00:00", ts))
+    return datetime.datetime.fromisoformat(re.sub(r"([.][0-9]+|)Z", "+00:00", ts))
 
 
 def raise_plaid(ex: plaid.errors.ItemError):
@@ -131,7 +131,7 @@ class PlaidAPI():
         if access_token:
             data['access_token'] = access_token
         else:
-            data['products'] = ['transactions']            
+            data['products'] = ['transactions']
 
         return self.client.post('/link/token/create', data)['link_token']
 
@@ -148,7 +148,7 @@ class PlaidAPI():
         """
         Only applicable to sandbox environment. Resets the login
         details for a specific account so you can test the update
-        account flow. 
+        account flow.
 
         Otherwise, attempting to update will just display "Account
         already connected." in the Plaid browser UI.
