@@ -6,14 +6,14 @@ import datetime
 
 from typing import List, Optional, Dict
 
-from plaidapi import AccountBalance, AccountInfo, Transaction as PlaidTransaction
+from .plaidapi import AccountBalance, AccountInfo, Transaction as PlaidTransaction
 
 def build_placeholders(list):
     return ",".join(["?"]*len(list))
 
 class TransactionsDB():
     def __init__(self, dbfile:str):
-        self.conn = sqlite3.connect(dbfile) 
+        self.conn = sqlite3.connect(dbfile)
 
         c = self.conn.cursor()
         c.execute("""
@@ -124,7 +124,7 @@ class TransactionsDB():
             select plaid_json from transactions
             where transaction_id in ({PARAMS})
         """.replace("{PARAMS}", build_placeholders(transaction_ids)), list(transaction_ids))
-        return [ 
+        return [
             PlaidTransaction(json.loads(d[0]))
             for d in r.fetchall()
         ]

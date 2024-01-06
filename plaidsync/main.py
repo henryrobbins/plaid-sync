@@ -6,10 +6,10 @@ from datetime import tzinfo
 import sys
 from collections import namedtuple
 
-import config
-import plaidapi
-import transactionsdb
-from plaidapi import PlaidAccountUpdateNeeded, PlaidError
+from . import config
+from . import plaidapi
+from . import transactionsdb
+from .plaidapi import PlaidAccountUpdateNeeded, PlaidError
 
 
 def parse_options():
