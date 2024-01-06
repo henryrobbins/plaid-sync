@@ -225,7 +225,7 @@ def link_account(cfg: config.Config, plaid: plaidapi.PlaidAPI, account_name: str
     # need the special token to initiate a link attempt
     link_token = plaid.get_link_token()
 
-    import webserver
+    from . import webserver
     plaid_response = webserver.serve(
         env=cfg.environment,
         clientName="plaid-sync",
