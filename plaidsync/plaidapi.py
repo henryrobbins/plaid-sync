@@ -12,8 +12,8 @@ from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.item_public_token_exchange_request import ItemPublicTokenExchangeRequest
 from plaid.model.item_get_request import ItemGetRequest
 from plaid.model.item_get_response import ItemGetResponse
-from plaid.model.transactions_get_request import TransactionsGetRequest
-from plaid.model.transactions_get_response import TransactionsGetResponse
+from plaid.model.transactions_sync_request import TransactionsSyncRequest
+from plaid.model.transactions_sync_response import TransactionsSyncResponse
 from plaid.model.accounts_balance_get_request import AccountsBalanceGetRequest
 from plaid.model.accounts_get_response import AccountsGetResponse
 from typing import Optional, List
@@ -44,7 +44,7 @@ class AccountInfo:
 
 
 class Transaction:
-    def __init__(self, data: TransactionsGetResponse):
+    def __init__(self, data):
         self.raw_data = data.__dict__
         self.account_id     = data.account_id
         self.date           = data.date
@@ -180,24 +180,17 @@ class PlaidAPI():
 
     @wrap_plaid_error
     def get_transactions(self, access_token:str, start_date:datetime.date, end_date:datetime.date, account_ids:Optional[List[str]]=None, status_callback=None):
-        ret = []
-        total_transactions = None
-        while True:
-            req = TransactionsGetRequest(
+        transactions = []
+        has_more = True
+        next_cursor = ""
+        while has_more:
+            req = TransactionsSyncRequest(
                 access_token=access_token,
-                start_date=start_date,
-                end_date=end_date
+                cursor=next_cursor
             )
-            res = self.client.transactions_get(req)
-
-            total_transactions = res.total_transactions
-
-            ret += [
-                Transaction(t)
-                for t in res.transactions
-            ]
-
-            if status_callback: status_callback(len(ret), total_transactions)
-            if len(ret) >= total_transactions: break
-
-        return ret
+            res = self.client.transactions_sync(req)
+            has_more = res.has_more
+            next_cursor = res.next_cursor
+            added = res.added
+            transactions += [Transaction(t) for t in added]
+        return transactions
