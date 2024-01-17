@@ -23,7 +23,7 @@ setuptools.setup(
         ],
     },
     install_requires=[
-        "plaid-python==7.1.0"
+        "plaid-python>=18"
     ],
     python_requires='>=3.7'
 )

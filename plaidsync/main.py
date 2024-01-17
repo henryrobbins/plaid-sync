@@ -279,7 +279,7 @@ def main():
     args = parse_options()
     cfg = config.Config(args.config_file)
     db = transactionsdb.TransactionsDB(cfg.get_dbfile())
-    plaid = plaidapi.PlaidAPI(**cfg.get_plaid_client_config())
+    plaid = plaidapi.PlaidAPI(cfg.get_plaid_client_config())
 
     if args.update_account:
         update_account(cfg, plaid, args.update_account)
